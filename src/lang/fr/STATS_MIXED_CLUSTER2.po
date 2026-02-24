@@ -1,0 +1,251 @@
+# /***********************************************************************
+# * Licensed Materials - Property of IBM
+# *
+# * IBM SPSS Products: Statistics Common
+# *
+# * (C) Copyright IBM Corp. 1989, 2025
+# *
+# * US Government Users Restricted Rights - Use, duplication or disclosure
+# * restricted by GSA ADP Schedule Contract with IBM Corp.
+# ************************************************************************/
+msgid ""
+msgstr ""
+"Project-Id-Version: STATS_MIXED_CLUSTER2 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-19 20:13+0530\n"
+"PO-Revision-Date: 2026-02-19 20:13+0530\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: fr <fr@example.com>\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: STATS_MIXED_CLUSTER2.R:96
+msgid "End of procedure"
+msgstr "Fin de la procédure"
+
+#: STATS_MIXED_CLUSTER2.R:126
+msgid "Message Number"
+msgstr "Numéro de message"
+
+#: STATS_MIXED_CLUSTER2.R:164
+#, c-format
+msgid "Invalid variable name: %s"
+msgstr "Nom de variable non valide : %s"
+
+#: STATS_MIXED_CLUSTER2.R:178
+#, c-format
+msgid "Output variable already exists: %s"
+msgstr "La variable de sortie existe déjà : %s"
+
+#: STATS_MIXED_CLUSTER2.R:184 STATS_MIXED_CLUSTER2.R:271
+msgid "Mixed Cluster2"
+msgstr "Cluster2 mixte"
+
+#: STATS_MIXED_CLUSTER2.R:185
+msgid "Mixed Cluster2 Messages and Warnings"
+msgstr "Messages et avertissements Cluster2 mixte"
+
+#: STATS_MIXED_CLUSTER2.R:208
+msgid "Number of components must be specified if not using existing model"
+msgstr ""
+"Le nombre de composants doit être spécifié si vous n'utilisez pas le modèle "
+"existant."
+
+#: STATS_MIXED_CLUSTER2.R:216
+msgid "Split files is not supported by this procedure"
+msgstr ""
+"Le fractionnement de fichiers n'est pas pris en charge par cette procédure"
+
+#: STATS_MIXED_CLUSTER2.R:219
+msgid "Case weights are not supported by this procedure and will be ignored"
+msgstr ""
+"Les pondérations de cas ne sont pas prises en charge par cette procédure et "
+"seront ignorées"
+
+#: STATS_MIXED_CLUSTER2.R:224
+msgid "Cannot save model if using existing model.  Outmodel will be ignored"
+msgstr ""
+"Impossible de sauvegarder le modèle s'il existe déjà.  Le modèle de sortie "
+"sera ignoré"
+
+#: STATS_MIXED_CLUSTER2.R:239 STATS_MIXED_CLUSTER2.R:250
+msgid "Model file does not contain a model"
+msgstr "Le fichier modèle ne contient pas de modèle."
+
+#: STATS_MIXED_CLUSTER2.R:243
+#, c-format
+msgid "Model file %s not found or could not be read"
+msgstr "Le fichier modèle %s est introuvable ou illisible"
+
+#: STATS_MIXED_CLUSTER2.R:253
+msgid "No variables were specified"
+msgstr "Aucune variable n'a été spécifiée."
+
+#: STATS_MIXED_CLUSTER2.R:257
+msgid "A required input was not specified"
+msgstr "Une entrée obligatoire n'a pas été spécifiée."
+
+#: STATS_MIXED_CLUSTER2.R:281
+#, c-format
+msgid "The required variables are %s"
+msgstr "Les variables requises sont %s."
+
+#: STATS_MIXED_CLUSTER2.R:284
+#, c-format
+msgid ""
+"error fetching data\n"
+"%s"
+msgstr ""
+"Erreur lors de la récupération des données\n"
+"%s."
+
+#: STATS_MIXED_CLUSTER2.R:297
+#, c-format
+msgid "Invalid variable selection criterion: %s"
+msgstr "Critère de sélection de variable non valide : %s"
+
+#: STATS_MIXED_CLUSTER2.R:308
+#, c-format
+msgid "Estimation Failed: %s"
+msgstr "Echec de l'estimation : %s"
+
+#: STATS_MIXED_CLUSTER2.R:310
+#, c-format
+msgid "Estimation Warning: %s"
+msgstr "Avertissement relatif à l'estimation : %s"
+
+#: STATS_MIXED_CLUSTER2.R:319
+msgid "Procedure is unable to find any clusters"
+msgstr "La procédure ne trouve pas de clusters."
+
+#: STATS_MIXED_CLUSTER2.R:330
+#, c-format
+msgid "Estimated model saved to file %s"
+msgstr "Modèle estimé enregistré dans le fichier %s"
+
+#: STATS_MIXED_CLUSTER2.R:333
+#, c-format
+msgid "package VarSelLCM, version %s"
+msgstr "package VarSelLCM, version %s"
+
+#: STATS_MIXED_CLUSTER2.R:341
+msgid "Unable to produce the plot.  Model is deficient."
+msgstr "Impossible de générer le graphique.  Le modèle est déficient."
+
+#: STATS_MIXED_CLUSTER2.R:352
+#, c-format
+msgid "Output variables or root: %s: "
+msgstr "Variables de sortie ou racine : %s : "
+
+#: STATS_MIXED_CLUSTER2.R:378
+#, c-format
+msgid "Integer variables must have a scale measurement level: %s"
+msgstr ""
+"Les variables entières doivent avoir un niveau de mesure d'échelle : %s"
+
+#: STATS_MIXED_CLUSTER2.R:388
+#, c-format
+msgid ""
+"A nonnumeric or negative value was found in an integer variable.  Set to missing:\n"
+" %s"
+msgstr ""
+"Une valeur non numérique ou négative a été détectée dans une variable entière.  Définir comme manquant :\n"
+"%s"
+
+#: STATS_MIXED_CLUSTER2.R:412
+msgid "Estimation or new data dataset is required"
+msgstr "Une estimation ou un nouveau jeu de données sont nécessaires."
+
+#: STATS_MIXED_CLUSTER2.R:460
+#, c-format
+msgid "Probability variable names cannot already be in use: %s"
+msgstr ""
+"Les noms des variables de probabilité ne doivent pas déjà être utilisés : %s"
+
+#: STATS_MIXED_CLUSTER2.R:472
+#, c-format
+msgid "Predictions saved to %s"
+msgstr "Prévisions enregistrées sur %s"
+
+#: STATS_MIXED_CLUSTER2.R:484
+msgid "Variables"
+msgstr "Variables"
+
+#: STATS_MIXED_CLUSTER2.R:485
+msgid "Number of Clusters to Consider"
+msgstr "Nombre de clusters à prendre en compte"
+
+#: STATS_MIXED_CLUSTER2.R:486
+msgid "Best Number of Clusters"
+msgstr "Meilleur nombre de clusters"
+
+#: STATS_MIXED_CLUSTER2.R:487
+msgid "Input Model File"
+msgstr "Fichier modèle d'entrée"
+
+#: STATS_MIXED_CLUSTER2.R:488
+msgid "Output Model File"
+msgstr "Fichier modèle de sortie"
+
+#: STATS_MIXED_CLUSTER2.R:489
+msgid "Cluster Variable"
+msgstr "Variable de cluster"
+
+#: STATS_MIXED_CLUSTER2.R:490
+msgid "Cluster Probabilities Root Name"
+msgstr "Nom racine des probabilités de cluster"
+
+#: STATS_MIXED_CLUSTER2.R:495
+msgid "Variable Selection"
+msgstr "Sélection des variables"
+
+#: STATS_MIXED_CLUSTER2.R:496
+msgid "Variable Selection Criterion"
+msgstr "Critère de sélection des variables"
+
+#: STATS_MIXED_CLUSTER2.R:497
+msgid "Relevant Variables"
+msgstr "Variables pertinentes"
+
+#: STATS_MIXED_CLUSTER2.R:498
+msgid "Irrelevant Variables"
+msgstr "Variables non pertinentes"
+
+#: STATS_MIXED_CLUSTER2.R:499
+msgid "Log Likelihood"
+msgstr "Log-vraisemblance"
+
+#: STATS_MIXED_CLUSTER2.R:500
+msgid "Elapsed Time (Seconds"
+msgstr "Temps écoulé (secondes)"
+
+#: STATS_MIXED_CLUSTER2.R:501
+msgid "Estimation Date"
+msgstr "Date d'estimation"
+
+#: STATS_MIXED_CLUSTER2.R:516
+msgid "Yes"
+msgstr "Oui"
+
+#: STATS_MIXED_CLUSTER2.R:516
+msgid "No"
+msgstr "Non"
+
+#: STATS_MIXED_CLUSTER2.R:529 STATS_MIXED_CLUSTER2.R:530
+msgid "Clustering Parameters"
+msgstr "Paramètres de mise en cluster"
+
+#: STATS_MIXED_CLUSTER2.R:535
+msgid "Power"
+msgstr "Puissance"
+
+#: STATS_MIXED_CLUSTER2.R:538
+msgid "Variable"
+msgstr "Variable"
+
+#: STATS_MIXED_CLUSTER2.R:539
+msgid "Discriminative Power"
+msgstr "Pouvoir discriminant"

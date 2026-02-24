@@ -1,0 +1,20 @@
+Name: STATS_MIXED_CLUSTER2
+Display-Name: Mixed Type Cluster with Variable Selection
+Dialog-Specs: dialog499.cfe
+Command-Specs: STATS_MIXED_CLUSTER2.XML
+Code-Files: STATS_MIXED_CLUSTER2.R
+Misc-Files: extsyntax.css,stats_mixed_cluster2.htm,LICENSE,markdown.ht
+ ml
+Summary: Clustering with three variable types
+Description: This procedure performs clustering with variable types sc
+ ale, categorical, and count.  It can be used for variable selection a
+ nd to choose the best number of clusters.  Several criteria are avail
+ able for model selection.
+Author: Jon K Peck
+Version: 1.0.0
+Product-Version: 24
+Date: 3/1/2026
+Categories: cluster count mixed types
+Plugins: R
+R-Packages: R.utils,VarSelLCM
+Translation-Catalogues: lang

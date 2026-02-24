@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Mixed Variable Type Clustering with Variable Selection</title>
+
+<link rel="stylesheet" type="text/css" href="extsyntax.css" />
+
+
+</head>
+
+<body>
+<h1>STATS MIXED CLUSTER2 Extension Command</h1>
+
+<h2>Introduction</h2>
+Use this procedure to create a clustering model where variable selection and number of clusters can be
+determined simultaneously.  It can be used to create a latent class model and assign a class for each case in
+the estimation data.  The estimated model can be saved and then used to assign classes to new data.
+Optionally, the probability of membership in each class can be assigned for each case.  The discriminative power
+of each variable is displayed in a table along with an optional plot.  The larger the power, the more
+the variable distinguishes the clusters.  The discriminative power is the logarithm of the ratio between the likelihood of a variable being relevant vs. irrelevant. A value of 0 means the likelihoods are the same, indicating no added value in using that variable for clustering. 
+
+<p>Three types of variables can be used.  Continuous (scale) variables are considered to be drawn
+from a normal distribution for likelihood calculation; categorical (nominal and ordinal) variables from a multinomial distribution, and a third type, counts,
+are assumed to be Poisson.  The variable type for continuous and scale variables is based
+on the declared measurement level in SPSS - scale vs nominal or ordinal.  Counts are
+assumed to be Poisson and must have a scale level in SPSS. As Poisson variables, the counts
+should be small to moderate in size and nonnegative.  Missing values are managed without any pre-processing
+by the model used to cluster with the assumption that values are missing completely at random.
+Use summary statistics by cluster to see what variables have different distributions across the calculated clusters.
+
+
+<H2>Syntax</h2>
+
+<div class="syntax">
+<p>STATS MIXED CLUSTER2</br>
+ VARIABLES = list of scale and categorical variables to cluster</sup><br/>
+ COUNTVARS = list of count variablers to cluster<br/>
+ NCOMPONENTS = list of numbers of clusters to consider<sup>&#42;</sup><br/>
+ USEMODELFILE = "file specification for input model"<br/>
+ OUTMODELFILE = "file specification for saving model"<br/>
+ CLUSTERVAR = name for new variable to hold calculated cluster<sup>&#42;</sup><br/>
+ CLUSTERVARROOT = root name for cluster probabilities<br/>
+ 
+ <p>/OPTIONS<br/>
+ SELECTVARS = YES<sup>&#42;&#42;</sup> or NO<br/>
+ SELCRITERION = BIC<sup>&#42;&#42;</sup> or AIC or ICL or MICL<br/>
+ TIMELIMIT = execution time limit in seconds<br/>
+<p>/DISPLAY<br/>
+PLOT = YES<sup>&#42;&#42;</sup> or NO<br/>
+
+</p>
+
+<p>/HELP</br>
+STATS MIXED CLUSTER2 /HELP displays this information and does nothing else.</p>
+<p><sup>&#42;</sup> Required<br/>
+<sup>&#42;&#42;</sup> Default</p>
+</div>
+
+
+<pre class="example"><code>
+STATS MIXED CLUSTER2 VARIABLES=bdate educ gender id jobcat jobtime minority prevexp salary salbegin 
+NCOMPONENTS= 3 5 7 CLUSTERVAR=ccallbic CLUSTERPROBROOT=ccallrootbic
+OUTMODELFILE="c:\temp\empallbic.rdata"
+/OPTIONS SELECTVARS=YES SELCRITERION=BIC
+/DISPLAY PLOT=YES.
+</code></pre>
+
+<h2>Details</h2>
+<p>
+This procedure does not support case weights.   They will be ignored with a warning.  It also does not support split files.
+Cases with missing values are handled by the procedure.
+
+<p><strong>VARIABLES</strong> Specify the list of categorical and scale variables for clustering.
+Cases with missing values are handled by the procedure.</p>
+
+<p><strong>COUNTVARS</strong> List the variables to be treaed as counts.
+<p><Continuous (scale) variables are considered to be drawn
+from a normal distribution for likelihood calculation; categorical (nominal and ordinal) variables from a multinomial distribution, 
+and counts are assumed to be Poisson.  
+
+<p>The variable type for continuous and scale variables is based
+on the declared measurement level in SPSS - scale vs nominal or ordinal.  Counts are
+assumed to be Poisson and must have a scale level in SPSS. As Poisson variables, the counts
+should be small to moderate in size and nonnegative.  Missing values are managed without any pre-processing
+by the model used to cluster with the assumption that values are missing completely at random.
+
+<p>Tip: if you get an error message referring to NaN values being encountered, it is probably
+due to having extremely unlikely values in the Poisson variables.  Such variables should be
+treated	 as continuous, but also check that any big missing value codes are properly
+declared in SPSS.  
+<p>Use summary statistics and plots by cluster to see what variables have different distributions across the calculated clusters.
+
+<strong>NCOMPONENTS</strong> Specify a list of blank-separated numbers of clusters to be considered.
+The procedure will choose the best  likelihood for eachcluster number listed and report results for it.
+
+<p><strong>USEMODELFILE</strong> specifies to use a model file saved from a previous run instead of estimating a model
+to make predictions.
+If this is specified, omit the VARIABLES, COUNTVARS, NCOMPONENTS and OPTIONS keywords.  Predicted
+classes and, optionally, class probabilities are generated.</p>
+
+<p><strong>OUTMODELFILE</strong> specifies a file to hold the estimated model for future use.  Omit it if the
+command is reusing a saved model.</p>
+
+<p><strong>CLUSTERVAR</strong> specifies a variable to hold the assigned cluster numbers.  This variable can be different from the estimation cluster variable for applying an existing model to new data.  The variable name must not already be in use
+in the file.</p>
+
+<strong>CLUSTERPROBROOT</strong> specifies a root name for probabilities.  If a root is specified, the probability for each class will be saved under a name of the form
+<i>rootname_n</i>, where n is the class number.  The cluster number variable and names of the probability name pattern must
+not already exist in the dataset.  Since the number of classes is typically unknown beforehand, names of the form <i>rootname</i> are
+not allowed.
+
+<strong>TIMELIMIT</strong> specifies the maximum time the estimation stage of the procedure
+is allowed to run.  If it has not completed by the limit, the procedure will be rudely terminated,
+but the SPSS session will continue to be available.  By default, there is no limit.  The elapsed
+time for the procedure is reported in the parameters table for procedures that complete.
+
+<p><strong>SELECTVARS</strong>  Variable selection is optional. If YES is specified , the
+procedure will simultaneously determine the best variables and number of clusters
+according to the SELCRITERION choice.  If NO is chosen,
+all variables will be included.  In variable selection, variables are classified as
+either relevant or irrelevant.   A variable is relevant if its distribution is 
+dependent on the cluster membership variable; otherwise, it is irrelevant.
+That means for continuous variables    that the mean  and variance 
+ are identical for every cluster and for
+categorical and integer variables that the probability distribution (parameters of the multinomial or Poisson distribution) is the same across all clusters.
+
+<strong><SELCRITERION></strong> There are four choices.  AIC and BIC statistics for the model are available whether or not
+variable selection is used.  If variable selection is not used, ICL, Integrated Completed Likelihood can
+be displayed; if selection is used, MICL, Maximum Integrated Complete-Data Likelihood, which maximizes
+the likelihood over all possible partitions, can be used.
+
+<p>BIC stands for Bayesian Information Criterion, a metric used in clustering to determine the optimal number of clusters and evaluate model quality, particularly in Gaussian Mixture Models (GMMs). It balances goodness-of-fit against model complexity, favoring models with fewer clusters to prevent overfitting.  AIC stands for Akaike Information Criterion (AIC), which is similar to the BIC but has
+a smaller complexity penalty.
+
+<p>With MICL, the procedure implements variable selection by maximizing the MICL criterion, which works by alternating between optimizing the partition (classes) and the variable selection.  This ICL-based approach is often more robust than other methods like BIC when clusters overlap, as its inherent penalty for uncertain assignments leads to more stable and interpretable clustering solutions
+at the expense of extra execution time.
+
+
+<h2>Acknowledgement</h2>
+This procedure uses the VarSelLCM package from CRAN.
+
+<h2>References</h2>
+<a href="https://link.springer.com/article/10.3758/s13428-022-01795-7?fromPaywallRec=true">Variable Selection for Model-Based Clustering with Missing Values</a>
+<p><a href="https://cran.r-project.org/web/packages/VarSelLCM/VarSelLCM.pdf">Package VarSelLCM</a>
+</body>
+<p>&copy; Copyright Jon K Peck 2026</p>
+</html>
+
