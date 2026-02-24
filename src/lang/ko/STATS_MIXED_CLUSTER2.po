@@ -1,0 +1,242 @@
+# /***********************************************************************
+# * Licensed Materials - Property of IBM
+# *
+# * IBM SPSS Products: Statistics Common
+# *
+# * (C) Copyright IBM Corp. 1989, 2025
+# *
+# * US Government Users Restricted Rights - Use, duplication or disclosure
+# * restricted by GSA ADP Schedule Contract with IBM Corp.
+# ************************************************************************/
+msgid ""
+msgstr ""
+"Project-Id-Version: STATS_MIXED_CLUSTER2 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-02-19 20:13+0530\n"
+"PO-Revision-Date: 2026-02-19 20:13+0530\n"
+"Last-Translator: Your Name <your.email@example.com>\n"
+"Language-Team: ko <ko@example.com>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: STATS_MIXED_CLUSTER2.R:96
+msgid "End of procedure"
+msgstr "프로시저 끝"
+
+#: STATS_MIXED_CLUSTER2.R:126
+msgid "Message Number"
+msgstr "메시지 번호"
+
+#: STATS_MIXED_CLUSTER2.R:164
+#, c-format
+msgid "Invalid variable name: %s"
+msgstr "잘못된 변수 이름: %s"
+
+#: STATS_MIXED_CLUSTER2.R:178
+#, c-format
+msgid "Output variable already exists: %s"
+msgstr "출력 변수가 이미 있음: %s"
+
+#: STATS_MIXED_CLUSTER2.R:184 STATS_MIXED_CLUSTER2.R:271
+msgid "Mixed Cluster2"
+msgstr "혼합 Cluster2"
+
+#: STATS_MIXED_CLUSTER2.R:185
+msgid "Mixed Cluster2 Messages and Warnings"
+msgstr "혼합 Cluster2 메시지 및 경고"
+
+#: STATS_MIXED_CLUSTER2.R:208
+msgid "Number of components must be specified if not using existing model"
+msgstr "기존 모델을 사용하지 않을 경우, 구성요소의 수를 지정해야 합니다."
+
+#: STATS_MIXED_CLUSTER2.R:216
+msgid "Split files is not supported by this procedure"
+msgstr "이 프로시저에서는 파일 분할이 지원되지 않습니다."
+
+#: STATS_MIXED_CLUSTER2.R:219
+msgid "Case weights are not supported by this procedure and will be ignored"
+msgstr "케이스 가중치는 이 프로시저에서는 지원되지 않으며 무시됩니다."
+
+#: STATS_MIXED_CLUSTER2.R:224
+msgid "Cannot save model if using existing model.  Outmodel will be ignored"
+msgstr "기존 모델을 사용하는 경우에는 모델을 저장할 수 없습니다.  아웃모델은 무시됩니다."
+
+#: STATS_MIXED_CLUSTER2.R:239 STATS_MIXED_CLUSTER2.R:250
+msgid "Model file does not contain a model"
+msgstr "모델 파일에 모델이 없음"
+
+#: STATS_MIXED_CLUSTER2.R:243
+#, c-format
+msgid "Model file %s not found or could not be read"
+msgstr "모델 파일 %s을(를) 찾을 수 없거나 읽을 수 없습니다."
+
+#: STATS_MIXED_CLUSTER2.R:253
+msgid "No variables were specified"
+msgstr "변수가 지정되지 않음"
+
+#: STATS_MIXED_CLUSTER2.R:257
+msgid "A required input was not specified"
+msgstr "필수 입력이 지정되지 않음"
+
+#: STATS_MIXED_CLUSTER2.R:281
+#, c-format
+msgid "The required variables are %s"
+msgstr "필요한 변수는 %s입니다."
+
+#: STATS_MIXED_CLUSTER2.R:284
+#, c-format
+msgid ""
+"error fetching data\n"
+"%s"
+msgstr ""
+"데이터 %s 페치 중\n"
+"오류 발생"
+
+#: STATS_MIXED_CLUSTER2.R:297
+#, c-format
+msgid "Invalid variable selection criterion: %s"
+msgstr "올바르지 않은 변수 선택 기준: %s"
+
+#: STATS_MIXED_CLUSTER2.R:308
+#, c-format
+msgid "Estimation Failed: %s"
+msgstr "추정 실패: %s"
+
+#: STATS_MIXED_CLUSTER2.R:310
+#, c-format
+msgid "Estimation Warning: %s"
+msgstr "추정 경고: %s"
+
+#: STATS_MIXED_CLUSTER2.R:319
+msgid "Procedure is unable to find any clusters"
+msgstr "프로싲시저가 클러스트를 찾을 수 없음"
+
+#: STATS_MIXED_CLUSTER2.R:330
+#, c-format
+msgid "Estimated model saved to file %s"
+msgstr "%s 파일에 저장된 추정 모델"
+
+#: STATS_MIXED_CLUSTER2.R:333
+#, c-format
+msgid "package VarSelLCM, version %s"
+msgstr "패키지 VarSelLCM, 버전 %s"
+
+#: STATS_MIXED_CLUSTER2.R:341
+msgid "Unable to produce the plot.  Model is deficient."
+msgstr "플롯을 생성할 수 없습니다.  모델이 불완전합니다."
+
+#: STATS_MIXED_CLUSTER2.R:352
+#, c-format
+msgid "Output variables or root: %s: "
+msgstr "출력 변수 또는 루트: %s "
+
+#: STATS_MIXED_CLUSTER2.R:378
+#, c-format
+msgid "Integer variables must have a scale measurement level: %s"
+msgstr "정수 변수에는 다음 척도 측정 수준이 있어야 함: %s"
+
+#: STATS_MIXED_CLUSTER2.R:388
+#, c-format
+msgid ""
+"A nonnumeric or negative value was found in an integer variable.  Set to missing:\n"
+" %s"
+msgstr ""
+"정수 변수에서 비숫자 값 또는 음수 값이 발견되었습니다.  누락 값으로 설정:\n"
+" %s"
+
+#: STATS_MIXED_CLUSTER2.R:412
+msgid "Estimation or new data dataset is required"
+msgstr "추정치 또는 새로운 데이터 세트가 필요합니다."
+
+#: STATS_MIXED_CLUSTER2.R:460
+#, c-format
+msgid "Probability variable names cannot already be in use: %s"
+msgstr "확률 변수 이름은 이미 사용 중인 이름과 중복될 수 없음: %s"
+
+#: STATS_MIXED_CLUSTER2.R:472
+#, c-format
+msgid "Predictions saved to %s"
+msgstr "예측은 %s에 저장됨"
+
+#: STATS_MIXED_CLUSTER2.R:484
+msgid "Variables"
+msgstr "변수"
+
+#: STATS_MIXED_CLUSTER2.R:485
+msgid "Number of Clusters to Consider"
+msgstr "고려해야 할 클러스터 수"
+
+#: STATS_MIXED_CLUSTER2.R:486
+msgid "Best Number of Clusters"
+msgstr "최적 클러스터 수"
+
+#: STATS_MIXED_CLUSTER2.R:487
+msgid "Input Model File"
+msgstr "입력 모델 파일"
+
+#: STATS_MIXED_CLUSTER2.R:488
+msgid "Output Model File"
+msgstr "출력 모델 파일"
+
+#: STATS_MIXED_CLUSTER2.R:489
+msgid "Cluster Variable"
+msgstr "클러스터 변수"
+
+#: STATS_MIXED_CLUSTER2.R:490
+msgid "Cluster Probabilities Root Name"
+msgstr "클러스터 확률 루트 이름"
+
+#: STATS_MIXED_CLUSTER2.R:495
+msgid "Variable Selection"
+msgstr "변수 선택"
+
+#: STATS_MIXED_CLUSTER2.R:496
+msgid "Variable Selection Criterion"
+msgstr "변수 선택 기준"
+
+#: STATS_MIXED_CLUSTER2.R:497
+msgid "Relevant Variables"
+msgstr "관련 변수"
+
+#: STATS_MIXED_CLUSTER2.R:498
+msgid "Irrelevant Variables"
+msgstr "관련 없는 변수"
+
+#: STATS_MIXED_CLUSTER2.R:499
+msgid "Log Likelihood"
+msgstr "로그 가능도"
+
+#: STATS_MIXED_CLUSTER2.R:500
+msgid "Elapsed Time (Seconds"
+msgstr "경과 시간(초)"
+
+#: STATS_MIXED_CLUSTER2.R:501
+msgid "Estimation Date"
+msgstr "추정 날짜"
+
+#: STATS_MIXED_CLUSTER2.R:516
+msgid "Yes"
+msgstr "예"
+
+#: STATS_MIXED_CLUSTER2.R:516
+msgid "No"
+msgstr "아니오"
+
+#: STATS_MIXED_CLUSTER2.R:529 STATS_MIXED_CLUSTER2.R:530
+msgid "Clustering Parameters"
+msgstr "클러스터링 매개변수"
+
+#: STATS_MIXED_CLUSTER2.R:535
+msgid "Power"
+msgstr "거듭제곱"
+
+#: STATS_MIXED_CLUSTER2.R:538
+msgid "Variable"
+msgstr "가변"
+
+#: STATS_MIXED_CLUSTER2.R:539
+msgid "Discriminative Power"
+msgstr "변별력"
