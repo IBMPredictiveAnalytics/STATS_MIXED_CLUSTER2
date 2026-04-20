@@ -2,10 +2,11 @@
 # * (C) Copyright Jon K Peck, 2026
 # ************************************************************************/
 
-# version 1.0.0
+# version 1.0.1
 
 # history
 # feb 2026    Initial version
+# apr-8-2026  suppress plot failure when no discrimination
 
 
 
@@ -338,12 +339,16 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
             ncomponents, nbcores, caption, clustervar, clusterprobsroot, estdate, starttime, warns)
         if (plots) {
             # plots often produce useless "discouraged" warnings, so they are suppressed
-            tryCatch(
-                suppressWarnings(plot(varselres)),
-            error = function(e) {warns$warn(gtxt("Unable to produce the plot.  Model is deficient."),
-                dostop=FALSE)}
-            ###warning = function(w) {warns$warn(w, dostop=FALSE)}
+            failmsg = gtxt("Unable to produce the plot.  Model is deficient or discrimination is zero")
+            if (all(varselres@criteria@discrim == 0)) {
+                warns$warn(failmsg, dostop=FALSE)
+            } else {
+                tryCatch(
+                    suppressWarnings(plot(varselres)),
+                error = function(e) {warns$warn(failmsg,
+                    dostop=FALSE)}
             )
+            }
         }
     }
     spsspkg.EndProcedure()

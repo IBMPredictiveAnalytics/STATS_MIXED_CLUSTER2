@@ -11,7 +11,7 @@ Description: This procedure performs clustering with variable types sc
  nd to choose the best number of clusters.  Several criteria are avail
  able for model selection.
 Author: Jon K Peck
-Version: 1.0.0
+Version: 1.0.1
 Product-Version: 24
 Date: 3/1/2026
 Categories: cluster count mixed types
