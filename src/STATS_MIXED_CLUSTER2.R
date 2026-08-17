@@ -32,7 +32,7 @@ tryCatch(suppressWarnings(suppressPackageStartupMessages(library(R.utils, warn.c
 
 # Override for function in VarSelClus
 proba.post <- function(object, newdata){
-    ###print("in replacement") #dbg
+
     logprob <- matrix(object@param@pi, nrow(newdata), object@model@g, byrow=TRUE)
     for (nom in colnames(newdata)){
         xnotna <- newdata[,which(colnames(newdata)==nom)]
@@ -190,6 +190,7 @@ omsid="STATSMIXEDCLUSTER2"
 domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
             selectvars=TRUE, selcriterion="BIC", usemodelfile=NULL, plots=TRUE,
             outmodel=NULL, clustervar, clusterprobsroot=NULL, nbcores=1,
+            impdataset=NULL, impmethod="postmean", idvar=NULL, ignore=TRUE,
             timelimit=Inf) 
     {
 
@@ -197,12 +198,12 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
      # sink(file="c:/temp/mixed2.log", type="output")
      # f = file("c:/temp/mixed2msgs.log", open="w")
      # sink(file=f, type="message")
-       domain<-"STATS_MIXED_CLUSTER2"
+    domain<-"STATS_MIXED_CLUSTER2"
     setuplocalization(domain)
      
      # varselCluster does not work correctly with multiple cores
      # The discrim result is incomplete, and, hence, the plot fails
-     # Leaving nbcomes in the syntax definition for, perhaps, the future..
+     # Leaving nbcores in the syntax definition for, perhaps, the future..
      nbcores = 1
      warns = Warn(procname=warningsprocname,omsid=omsid)
     usingmodel = !is.null(usemodelfile)
@@ -253,7 +254,7 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
         warns$warn(gtxt("Model file does not contain a model"), dostop=TRUE)
     }
     if (is.null(c(variables, integervars))) {
-        warns$warwn(gtxt("No variables were specified"))
+        warns$warwn(gtxt("No variables were specified"), dostop=TRUE)
     }
     spssdict = spssdictionary.GetDictionaryFromSPSS()
     if (any(sapply(list(ncomponents, clustervar), is.null))  && !usingmodel) {
@@ -264,6 +265,20 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
     if (!usingmodel) {
         variables = casecorrect(c(variables), spssdict, warns)
         integervars = casecorrect(c(integervars), spssdict, warns)
+    }
+    if (!is.null(impdataset)) {
+        if (is.null(idvar)) {
+            warns$warn(gtxt("An ID variable is required if imputing missing values"),
+                dostop=TRUE)
+        }
+        if (impdataset %in% dslist) {
+            warns$warn(gtxt("The imputed dataset name is already in use"), dostop=TRUE)
+        }
+        idvar = casecorrect(c(idvar), spssdict, warns)[[1]]
+        if (idvar %in% variables) {
+            warns$warn(gtxt("The ID variable cannot be in the clustering variables list"),
+                dostop=TRUE)
+        }
     }
     starttime = as.integer(Sys.time())
     # tempcaseid will be used to synchronize new vars with cases in case there is a select in effect
@@ -276,17 +291,25 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
 
     tryCatch(
         {
-        dta = spssdata.GetDataFromSPSS(c(variables, integervars), missingValueToNA=TRUE, factorMode="levels",
+        dta = spssdata.GetDataFromSPSS(paste(c(variables, integervars, idvar), collapse=" "), missingValueToNA=TRUE, factorMode="levels",
             keepUserMissing=FALSE, row.label=tempcaseid)
+        if (!is.null(impdataset)) {
+            iddata = dta[[ncol(dta)]]
+            dta = dta[-ncol(dta)]
+        }
         },
         error=function(e) {
-            print(e)
+            warns$warn(e, dostop=TRUE)
             warns$warn(gtxtf("The required variables are %s", 
                 paste(c(variables, integervars), collapse=" ", sep=" ")))
-            
             warns$warn(paste(gtxtf("error fetching data\n%s", e), sep="\n"), dostop=TRUE)
         }
     )
+    if (!is.null(impdataset)) {
+        if (anyDuplicated(iddata) > 0) {
+            warns$warn(gtxt("The ID variable contains duplicate values"), dostop=TRUE)
+        }
+    }
 
     # procedure handles missing data
     if (length(integervars) > 0) {
@@ -308,6 +331,7 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
                         crit.varsel=selcriterion)
                 estdate <<- date()
                 }, error = function(ee) {
+                    
                     warns$warn(gtxtf("Estimation Failed: %s", ee), dostop=TRUE)
                 }, warning = function(w) {
                     warns$warn(gtxtf("Estimation Warning: %s", w), dostop=TRUE)
@@ -336,7 +360,7 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
     caption = gtxtf("package VarSelLCM, version %s", packageVersion("VarSelLCM"))
     if (!usingmodel) {
         displayresults(varselres, dta, usemodelfile, outmodel, selectvars, selcriterion, 
-            ncomponents, nbcores, caption, clustervar, clusterprobsroot, estdate, starttime, warns)
+            ncomponents, nbcores, impdataset, caption, clustervar, clusterprobsroot, estdate, starttime, warns)
         if (plots) {
             # plots often produce useless "discouraged" warnings, so they are suppressed
             failmsg = gtxt("Unable to produce the plot.  Model is deficient or discrimination is zero")
@@ -351,6 +375,7 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
             }
         }
     }
+
     spsspkg.EndProcedure()
 
     if (!usingmodel) {
@@ -359,6 +384,12 @@ domixed2 = function(variables=NULL, integervars=NULL, ncomponents=NULL,
         warns$warn(gtxtf("Output variables or root: %s: ", 
             paste(clustervar, clusterprobsroot, sep=" ", collapse=" ")))
         writedataset(resproba, usemodelfile, clustervar, clusterprobsroot, dta, outmodel, spssdict, tempcaseid, estdate, warns)
+    }
+    if (!is.null(impdataset)) {
+        resimp = VarSelImputation(varselres, newdata=dta, method=impmethod)
+        resimp = cbind(iddata, resimp)
+        names(resimp)[[1]] = idvar
+        makeimpdataset(resimp, impdataset, spssdict, warns)
     }
         warns$display(inproc=FALSE)
     # DEBUG
@@ -479,9 +510,41 @@ writedataset = function(res, usemodelfile, clustervar, clusterprobsroot, dta, ou
     warns$warn(gtxtf("Predictions saved to %s", paste(colnames(outdata)[2:ncol(outdata)], collapse=" ")))
 }
 
+makeimpdataset = function(resimp, impdataset, spssdict, warns) {
+    # make dataset with imputed data
+    
+    # resimp is imputed data as data frame including the id variable
+    # impdataset is the dataset name to assign
+    # spssdict is a variable dictionary
+    # Using this mechanism, because using CSV would have trouble with some formats.
+    
+    vnames = names(resimp)
+    activedataset = getactivedsname()
+    dictlist = list()
+    # copy active file dict entries for names in imputed data
+    # todo: cluster var
+    for (v in vnames) {
+        dictlist[length(dictlist)+1] = spssdict[which(spssdict["varName",] == v)]
+    }
+    ###spsspkg.StartProcedure(gtxt("Mixed Cluster2"),"STATS MIXED CLUSTER2")
+    dict = spssdictionary.CreateSPSSDictionary(dictlist)
+    spssdictionary.SetDictionaryToSPSS(impdataset, dict)
+    spssdata.SetDataToSPSS(impdataset, resimp)
+    ###spssdictionary.SetActive(impdataset)
+    spssdictionary.EndDataStep()
+    ###spsspkg.EndProcedure()
+    spsspkg.Submit(sprintf("DATASET ACTIVATE %s", activedataset))
+    spsspkg.Submit(sprintf("APPLY DICTIONARY FROM %s.", activedataset))
+    spsspkg.Submit(sprintf("DATASET ACTIVATE %s", activedataset))
+    ###spssdictionary.SetActive(activedataset)
+
+    warns$warn(gtxtf("Imputed data saved to dataset %s", impdataset))
+
+}
+
 
 displayresults = function(res, dta, usemodelfile, outmodel, 
-    vbleSelec, crit.varsel, ncomponents, nbcores,
+    vbleSelec, crit.varsel, ncomponents, nbcores, impdataset,
     caption, clustervar, clusterprobs, estdate, starttime, warns)
     {
     elapsedtime = as.integer(Sys.time()) - starttime
@@ -504,6 +567,7 @@ displayresults = function(res, dta, usemodelfile, outmodel,
         gtxt("Relevant Variables"),
         gtxt("Irrelevant Variables"),
         gtxt("Log Likelihood"),
+        gtxt("Imputed Dataset"),
         gtxt("Elapsed Time (Seconds"),
         gtxt("Estimation Date")
     )
@@ -524,7 +588,8 @@ displayresults = function(res, dta, usemodelfile, outmodel,
         ifelse(vbleSelec == 0, "--", crit.varsel),
         paste(res@model@names.relevant, collapse=" "),
         paste(res@model@names.irrelevant, collapse=" "),
-        res@criteria@loglikelihood,
+        sprintf("%.4f", res@criteria@loglikelihood),
+        ifelse(is.null(impdataset), "--", impdataset),
         elapsedtime,
         estdate
     )
@@ -664,6 +729,12 @@ Run<-function(args){
         spsspkg.Template("OUTMODELFILE", subc="", ktype="literal", var="outmodel", islist=FALSE),
         spsspkg.Template("TIMELIMIT", subc="", ktype="int", var="timelimit", islist=FALSE),
         
+        spsspkg.Template("DATASET", subc="IMPUTATION", ktype="varname", var="impdataset"),
+        spsspkg.Template("IMPMETHOD", subc="IMPUTATION", ktype="str", var="impmethod",
+                         vallist=list("postmean", "sampling")),
+        spsspkg.Template("IDVAR", subc="IMPUTATION", ktype="varname", var="idvar"),
+        spsspkg.Template("IGNORE", subc="IMPUTATION", ktype="bool", var="ignore"),
+        
         spsspkg.Template("PLOT", subc="DISPLAY", ktype="bool", var="plots", islist=FALSE),
 
         spsspkg.Template("NCORES", subc="OPTIONS", ktype="int", var="nbcores", 
@@ -699,3 +770,150 @@ helper = function(cmdname) {
         assign("helper", spsspkg.helper)
     }
 }
+
+
+################ Imputation.R (corrected) #############
+check.results <- function(obj){
+    if (!inherits(obj,"VSLCMresults")) stop("Results must be an instance of VSLCMresults returned by the function VarSelCluster of R package VarSelLCM")
+}
+
+ImputCont <- function(data, tik, param, method){
+    output <- as.data.frame(data@data)
+    for (j in 1:data@d){
+        if (sum(data@notNA[,j])<data@n){
+            who <- which(data@notNA[,j]==0)
+            output[who, j] <- 0
+            if (method=="postmean"){
+                for (k in 1:ncol(tik)) output[who, j] <- output[who, j] + tik[who,k]*param@mu[j,k]
+            }else if (method=="sampling"){
+                z <- sample(1:ncol(tik), 1, prob=tik[who,])
+                output[who, j] <- rnorm(1, param@mu[j,z], param@sd[j,z])
+            }else{
+                stop("argument method must be equal to postmean or sampling")
+            }
+        }  
+    }
+    return(output)
+}
+
+ImputInte <- function(data, tik, param, method){
+    output <- as.data.frame(data@data)
+    for (j in 1:data@d){
+        if (sum(data@notNA[,j])<data@n){
+            who <- which(data@notNA[,j]==0)
+            output[who, j] <- 0
+            if (method=="postmean"){
+                for (k in 1:ncol(tik))  output[who, j] <- output[who, j] + tik[who,k]*param@lambda[j,k]
+            }else if (method=="sampling"){
+                z <- sample(1:ncol(tik), 1, prob=tik[who,])
+                output[who, j] <- rpois(1, param@lambda[j,z])
+            }else{
+                stop("argument method must be equal to postmean or sampling")
+            }
+        }  
+    }
+    return(output)
+}
+
+
+ImputCate <- function(data, tik, param, method){
+    output <- as.data.frame(data@data)
+    for (j in 1:data@d){
+        if (any(is.na(data@data[,j]))){
+            who <- which(is.na(data@data[,j])==T)
+            if (method=="postmean"){
+                output[who, j] <- data@modalitynames[[j]][apply(tik[who,]%*%param@alpha[[j]],1,which.max)]
+            }else if (method=="sampling"){
+                z <- sample(1:ncol(tik), 1, prob=tik[who,])
+                output[who, j] <- sample(data@modalitynames[[j]], 1, prob=param@alpha[[j]][z,])
+            }else{
+                stop("argument method must be equal to postmean or sampling")
+            }
+        }
+    }
+    return(output)
+}
+
+###################################################################################
+###################################################################################
+##' Imputation of missing values
+##'
+##' @description  
+##' This function permits imputation of missing values in a dataset by using mixture model.
+##' Two methods can be used for imputation:
+##' \itemize{
+#'  \item{posterior mean (method="postmean")}
+#'  \item{sampling from the full conditionnal distribution (method="sampling")}
+#'  }
+##' 
+##' @param obj an instance of \linkS4class{VSLCMresults}  which defines the model used for imputation.
+##' @param newdata data.frame Dataset containing the missing values to impute.
+##' @param method character definiting the method of imputation: "postmean" or "sampling"
+##' 
+##' @examples
+##' # Data loading
+##' data("heart")
+##' 
+##' # Clustering en 2 classes
+##' results <- VarSelCluster(heart[,-13], 2)
+##' 
+##' # Data where missing values will be imputed
+##' newdata <- heart[1:2,-13]
+##' newdata[1,1] <- NA
+##' newdata[2,2] <- NA
+##' 
+##' # Imputation
+##' VarSelImputation(results, newdata)
+##' 
+##' @export
+##'
+##'
+VarSelImputation <- function(obj, newdata, method="postmean"){
+    #### Tests on the input arguments
+    check.results(obj)        
+    if (!(method %in% c("postmean", "sampling")))
+        stop("method must be postmean or sampling")
+    ####
+    #### tik <- predict(obj, newdata)
+    tik <- proba.post(obj, newdata)
+    
+    if (method=="postmean"){
+        for (nom in colnames(newdata)){
+            loc <- which(colnames(newdata)==nom)
+            if (any(is.na(newdata[,loc]))){
+                where <- which(is.na(newdata[,loc]))
+                if (nom %in% rownames(obj@param@paramContinuous@mu)){
+                    who <- which(nom == rownames(obj@param@paramContinuous@mu))
+                    newdata[where, loc] <- as.numeric(tik[where, , drop=FALSE] %*% as.numeric(obj@param@paramContinuous@mu[who, , drop=FALSE]))
+                }else if (nom %in% rownames(obj@param@paramInteger@lambda)){
+                    who <- which(nom == rownames(obj@param@paramInteger@lambda))
+                    newdata[where, loc] <- as.numeric(tik[where, , drop=FALSE] %*% as.numeric(obj@param@paramInteger@lambda[who, , drop=FALSE]))
+                }else if (nom %in% names(obj@param@paramCategorical@alpha)){
+                    who <- which(nom ==  names(obj@param@paramCategorical@alpha))
+                    newdata[where, loc] <- obj@data@dataCategorical@modalitynames[[who]][apply(tik[where,]%*%obj@param@paramCategorical@alpha[[who]],1,which.max)]
+                }
+            }
+        }
+    }else{
+        for (i in which(rowSums(is.na(newdata))>0)){
+            zi <- sample(1:ncol(tik), 1, prob = tik[i,])
+            for (nom in colnames(newdata)){
+                loc <- which(colnames(newdata)==nom)
+                if (is.na(newdata[i,loc])){
+                    if (nom %in% rownames(obj@param@paramContinuous@mu)){
+                        who <- which(nom == rownames(obj@param@paramContinuous@mu))
+                        newdata[i, loc] <- rnorm(1, obj@param@paramContinuous@mu[who, zi], obj@param@paramContinuous@sd[who, zi])
+                    }else if (nom %in% rownames(obj@param@paramInteger@lambda)){
+                        who <- which(nom == rownames(obj@param@paramInteger@lambda))
+                        newdata[i, loc] <- rpois(1, obj@param@paramInteger@lambda[who,zi])
+                    }else if (nom %in% names(obj@param@paramCategorical@alpha)){
+                        who <- which(nom ==  names(obj@param@paramCategorical@alpha))
+                        newdata[i, loc] <- sample(obj@data@dataCategorical@modalitynames[[who]], 1, prob = obj@param@paramCategorical@alpha[[who]][zi,])
+                    }
+                }
+            }
+        }
+    }
+    return(newdata)         
+}
+

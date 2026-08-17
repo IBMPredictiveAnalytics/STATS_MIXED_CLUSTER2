@@ -22,6 +22,9 @@ the estimation data.  The estimated model can be saved and then used to assign c
 Optionally, the probability of membership in each class can be assigned for each case.  The discriminative power
 of each variable is displayed in a table along with an optional plot.  The larger the power, the more
 the variable distinguishes the clusters.  The discriminative power is the logarithm of the ratio between the likelihood of a variable being relevant vs. irrelevant. A value of 0 means the likelihoods are the same, indicating no added value in using that variable for clustering. 
+<p>This procedure automatically imputes values for missing data.  It can create a complete
+dataset including all the imputed values, so it can be used for that purpose even if
+clustering is not of interest.
 
 <p>Three types of variables can be used.  Continuous (scale) variables are considered to be drawn
 from a normal distribution for likelihood calculation; categorical (nominal and ordinal) variables from a multinomial distribution, and a third type, counts,
@@ -37,21 +40,24 @@ Use summary statistics by cluster to see what variables have different distribut
 
 <div class="syntax">
 <p>STATS MIXED CLUSTER2</br>
- VARIABLES = list of scale and categorical variables to cluster</sup><br/>
- COUNTVARS = list of count variablers to cluster<br/>
- NCOMPONENTS = list of numbers of clusters to consider<sup>&#42;</sup><br/>
- USEMODELFILE = "file specification for input model"<br/>
- OUTMODELFILE = "file specification for saving model"<br/>
- CLUSTERVAR = name for new variable to hold calculated cluster<sup>&#42;</sup><br/>
- CLUSTERVARROOT = root name for cluster probabilities<br/>
+VARIABLES = list of scale and categorical variables to cluster</sup><br/>
+COUNTVARS = list of count variablers to cluster<br/>
+NCOMPONENTS = list of numbers of clusters to consider<sup>&#42;</sup><br/>
+USEMODELFILE = "file specification for input model"<br/>
+OUTMODELFILE = "file specification for saving model"<br/>
+CLUSTERVAR = name for new variable to hold calculated cluster<sup>&#42;</sup><br/>
+CLUSTERVARROOT = root name for cluster probabilities<br/>
  
  <p>/OPTIONS<br/>
- SELECTVARS = YES<sup>&#42;&#42;</sup> or NO<br/>
- SELCRITERION = BIC<sup>&#42;&#42;</sup> or AIC or ICL or MICL<br/>
- TIMELIMIT = execution time limit in seconds<br/>
+SELECTVARS = YES<sup>&#42;&#42;</sup> or NO<br/>
+SELCRITERION = BIC<sup>&#42;&#42;</sup> or AIC or ICL or MICL<br/>
+TIMELIMIT = execution time limit in seconds<br/>
 <p>/DISPLAY<br/>
 PLOT = YES<sup>&#42;&#42;</sup> or NO<br/>
-
+<p>/IMPUTATION<BR/>
+DATASET dsname<br/>
+IMPMETHOD = POSTMEAN<sup>&#42;&#42;</sup> or SAMPLING</BR>
+IDVAR = id variable name
 </p>
 
 <p>/HELP</br>
@@ -72,7 +78,8 @@ OUTMODELFILE="c:\temp\empallbic.rdata"
 <h2>Details</h2>
 <p>
 This procedure does not support case weights.   They will be ignored with a warning.  It also does not support split files.
-Cases with missing values are handled by the procedure.
+Cases with missing values are handled by the procedure, and a dataset with imputed values 
+can be created.
 
 <p><strong>VARIABLES</strong> Specify the list of categorical and scale variables for clustering.
 Cases with missing values are handled by the procedure.</p>
@@ -88,11 +95,14 @@ assumed to be Poisson and must have a scale level in SPSS. As Poisson variables,
 should be small to moderate in size and nonnegative.  Missing values are managed without any pre-processing
 by the model used to cluster with the assumption that values are missing completely at random.
 
-<p>Tip: if you get an error message referring to NaN values being encountered, it is probably
-due to having extremely unlikely values in the Poisson variables.  Such variables should be
+<p>Tip: if you get an error message referring to NaN values being encountered or
+other failures, it is probably
+due to having extremely unlikely values in the Poisson probabilities for count variables
+or categorical variables with a large number of categories.
+Such count variables should be
 treated	 as continuous, but also check that any big missing value codes are properly
-declared in SPSS.  
-<p>Use summary statistics and plots by cluster to see what variables have different distributions across the calculated clusters.
+declared in SPSS.
+Use summary statistics and plots by cluster to see what variables have different distributions across the calculated clusters. 
 
 <strong>NCOMPONENTS</strong> Specify a list of blank-separated numbers of clusters to be considered.
 The procedure will choose the best  likelihood for eachcluster number listed and report results for it.
@@ -108,12 +118,12 @@ command is reusing a saved model.</p>
 <p><strong>CLUSTERVAR</strong> specifies a variable to hold the assigned cluster numbers.  This variable can be different from the estimation cluster variable for applying an existing model to new data.  The variable name must not already be in use
 in the file.</p>
 
-<strong>CLUSTERPROBROOT</strong> specifies a root name for probabilities.  If a root is specified, the probability for each class will be saved under a name of the form
+<p><strong>CLUSTERPROBROOT</strong> specifies a root name for probabilities.  If a root is specified, the probability for each class will be saved under a name of the form
 <i>rootname_n</i>, where n is the class number.  The cluster number variable and names of the probability name pattern must
 not already exist in the dataset.  Since the number of classes is typically unknown beforehand, names of the form <i>rootname</i> are
 not allowed.
 
-<strong>TIMELIMIT</strong> specifies the maximum time the estimation stage of the procedure
+<p><strong>TIMELIMIT</strong> specifies the maximum time the estimation stage of the procedure
 is allowed to run.  If it has not completed by the limit, the procedure will be rudely terminated,
 but the SPSS session will continue to be available.  By default, there is no limit.  The elapsed
 time for the procedure is reported in the parameters table for procedures that complete.
@@ -128,7 +138,7 @@ That means for continuous variables    that the mean  and variance
  are identical for every cluster and for
 categorical and integer variables that the probability distribution (parameters of the multinomial or Poisson distribution) is the same across all clusters.
 
-<strong><SELCRITERION></strong> There are four choices.  AIC and BIC statistics for the model are available whether or not
+<p><strong>SELCRITERION</strong> There are four choices.  AIC and BIC statistics for the model are available whether or not
 variable selection is used.  If variable selection is not used, ICL, Integrated Completed Likelihood can
 be displayed; if selection is used, MICL, Maximum Integrated Complete-Data Likelihood, which maximizes
 the likelihood over all possible partitions, can be used.
@@ -138,7 +148,18 @@ a smaller complexity penalty.
 
 <p>With MICL, the procedure implements variable selection by maximizing the MICL criterion, which works by alternating between optimizing the partition (classes) and the variable selection.  This ICL-based approach is often more robust than other methods like BIC when clusters overlap, as its inherent penalty for uncertain assignments leads to more stable and interpretable clustering solutions
 at the expense of extra execution time.
-
+<p>
+<strong>DATASET</strong> specifies a name for the imputed dataset,
+which will contain all the input variables.
+The dataset including the imputed values is not created if
+a name is not specified, but for the clustering calculation, imputation
+is always performed.
+<p><strong>IMPMETHOD</strong> specifies how to do the imputation
+ using a mixture model. Two methods can be used for imputation:
+posterior mean (POSTMEAN) or
+sampling from the full conditionnal distribution (SAMPLING)
+<p><strong>IDVAR</strong> specifies an ID variable.  The input
+dataset should be in sorted order, and the values should be unique.
 
 <h2>Acknowledgement</h2>
 This procedure uses the VarSelLCM package from CRAN.

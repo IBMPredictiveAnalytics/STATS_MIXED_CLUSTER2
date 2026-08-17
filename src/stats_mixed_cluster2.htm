@@ -38,6 +38,9 @@ the estimation data.  The estimated model can be saved and then used to assign c
 Optionally, the probability of membership in each class can be assigned for each case.  The discriminative power
 of each variable is displayed in a table along with an optional plot.  The larger the power, the more
 the variable distinguishes the clusters.
+It can create a complete
+dataset including all the imputed values, so it can be used for that purpose even if
+clustering is not of interest.
 
 <h2>Specifications</h2>
 
@@ -48,9 +51,13 @@ on the declared measurement level in SPSS - scale vs nominal or ordinal.  Counts
 assumed to be Poisson and must have a scale level in SPSS. As Poisson variables, the counts
 should be small to moderate in size and nonnegative.  Missing values are managed without any pre-processing
 by the model used to cluster with the assumption that values are missing completely at random.
+The imputed data can be saved as an SPSS dataset.
 
-<p>Tip: if you get an error message referring to NaN values being encountered, it is probably
-due to having extremely unlikely values in the Poisson variables.  Such variables should be
+<p>Tip: if you get an error message referring to NaN values being encountered or
+other failures, it is probably
+due to having extremely unlikely values in the Poisson probabilities for count variables
+or categorical variables with a large number of categories.
+Such count variables should be
 treated	 as continuous, but also check that any big missing value codes are properly
 declared in SPSS.
 Use summary statistics and plots by cluster to see what variables have different distributions across the calculated clusters.
@@ -111,6 +118,18 @@ the model by entering a model file specification in the Model File for Predictio
 <a>When predicting, all the input variable and parameter specifications are taken from
 the estimation model, but the cluster and probability names can be different.  An
 output model cannot be specified in prediction mode.
+
+<h2>The Imputed Data</h2>
+Use the Missing Values tab to get a dataset with the completed data.
+The dataset will contain all the input variables.
+<p>Check the Create imputed dataset box and enter a name for the imputed dataset.
+Choose the imputation method and specify an ID variable.
+The input
+dataset should be in sorted order by that variable, and the values should be unique.
+The dataset including the imputed values is not created if
+a name is not specified, but for the clustering calculation, imputation
+is always performed.
+
 
 <h2>Acknowledgements</h2>
 This procedure uses the R VarSelLCM package from CRAN.
